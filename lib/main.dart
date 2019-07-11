@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import './views/video_cell.dart';
 
 void main() => runApp(new RealWorldApp());
 
@@ -14,6 +15,13 @@ class RealWorldApp extends StatefulWidget {
 class RealWorldState extends State<RealWorldApp> {
   var _isLoading = true;
   var videos;
+
+  ///initialized the page at the first time the app started
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
 
   _fetchData() async {
     // this code will be used a lot of times when you try to fetch data from api
@@ -63,32 +71,35 @@ class RealWorldState extends State<RealWorldApp> {
                   itemCount: this.videos != null ? this.videos.length : 0,
                   itemBuilder: (context, i) {
                     final video = this.videos[i];
-                    return new Column(
-                      children: <Widget>[
-                        new Container(
-                          padding: new EdgeInsets.all(16.0),
-                          child: new Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              new Image.network(video["imageUrl"]),
-                              new Container(height: 8.0),
-                              new Text(
-                                video["name"],
-                                style: new TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                        ),
-                        new Divider()
-                      ],
+                    return new FlatButton(
+                      padding: new EdgeInsets.all(0.0),
+                      child: new VideoCell(video),
+                      onPressed: () {
+                        print("Video cell tapped $i");
+                        Navigator.push(
+                          context,
+                          new MaterialPageRoute(
+                              builder: (context) => new DetailPage()),
+                        );
+                      },
                     );
-                    //return new Text("Row: $i");
                   },
                 ),
         ),
       ),
     );
+  }
+}
+
+class DetailPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+        appBar: new AppBar(
+          title: Text("Detail Page"),
+        ),
+        body: new Center(
+          child: new Text("Detail detail detail"),
+        ));
   }
 }
